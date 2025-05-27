@@ -1,0 +1,40 @@
+# === Common ===
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+
+# === .NET (.NET Core / ASP.NET) ===
+SmartPantryApi/bin/
+SmartPantryApi/obj/
+SmartPantryApi/*.user
+SmartPantryApi/*.suo
+SmartPantryApi/.vs/
+SmartPantryApi/.vscode/
+
+# === Flutter ===
+smartpantry_app/.dart_tool/
+smartpantry_app/.idea/
+smartpantry_app/.packages
+smartpantry_app/build/
+smartpantry_app/ios/Flutter/Flutter.framework
+smartpantry_app/ios/Flutter/Flutter.podspec
+smartpantry_app/ios/Flutter/Generated.xcconfig
+smartpantry_app/pubspec.lock
+smartpantry_app/android/.gradle/
+smartpantry_app/android/app/debug/
+smartpantry_app/android/app/profile/
+smartpantry_app/android/app/release/
+smartpantry_app/.flutter-plugins
+smartpantry_app/.flutter-plugins-dependencies
+smartpantry_app/.metadata
+smartpantry_app/.gradle/
+smartpantry_app/.idea/
+smartpantry_app/*.iml
+
+# === VS Code ===
+.vscode/
+
+# === OS specific ===
+*.swp
+*~
