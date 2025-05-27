@@ -38,3 +38,24 @@ smartpantry_app/*.iml
 # === OS specific ===
 *.swp
 *~
+# === Firebase ===
+smartpantry_app/android/app/google-services.json
+smartpantry_app/ios/Runner/GoogleService-Info.plist
+
+# ==== envs ===
+*.env
+*.env.local
+*.env.development
+*.env.production
+
+# === Firebase Admin SDK ===
+**/firebase-adminsdk-*.json
+SmartPantryApi/firebase-*.json
+SmartPantryApi/secrets/
+SmartPantryApi/keys/
+SmartPantryApi/*.key
+SmartPantryApi/*.pem
+
+# === Configuration files ===
+secrets.json
+config.json
