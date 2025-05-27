@@ -7,12 +7,12 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY ["SmartPantryApi/SmartPantryApi.csproj", "SmartPantryApi/"]
-RUN dotnet restore "SmartPantryApi/SmartPantryApi.csproj"
+COPY ["SmartPantryApi.csproj", ""]
+RUN dotnet restore "./SmartPantryApi.csproj"
 
 COPY . .
 WORKDIR "/src/SmartPantryApi"
-RUN dotnet publish "SmartPantryApi.csproj" -c Release -o /app/publish
+RUN dotnet publish "./SmartPantryApi.csproj" -c Release -o /app/publish
 
 # Final stage
 FROM base AS final
