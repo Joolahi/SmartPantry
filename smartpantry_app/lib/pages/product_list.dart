@@ -42,9 +42,9 @@ class _ProductListPageState extends State<ProductListPage> {
                     ListTile(
                       title: Text(p.name),
                       subtitle: Text("${p.brand} • ${p.energy} kcal"),
-                      trailing: p.imageThumbUrl != null
+                      trailing: p.image != null
                           ? Image.network(
-                              p.imageThumbUrl!,
+                              p.image!,
                               width: 50,
                               height: 50,
                               fit: BoxFit.cover,
