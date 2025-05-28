@@ -5,6 +5,8 @@ using System;
 using Microsoft.VisualBasic;
 using Google.Cloud.Firestore.V1;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 public class FirebaseService
 {
@@ -28,7 +30,23 @@ public class FirebaseService
         var products = new List<Dictionary<string, object>>();
         foreach (var doc in snapshot.Documents)
         {
-            products.Add(doc.ToDictionary());
+            var raw = doc.ToDictionary();
+            var cleaned = new Dictionary<string, object>();
+            foreach (var entry in raw)
+            {
+                if (entry.Key == "createdAt" && entry.Value is Timestamp ts)
+                {
+                    cleaned[entry.Key] = ts.ToDateTime().ToString("o");
+                }
+                else
+                {
+                    cleaned[entry.Key] = entry.Value;
+                }
+            }
+            if (cleaned.Count > 0)
+            {
+                products.Add(cleaned);
+            }
         }
         return products;
     }

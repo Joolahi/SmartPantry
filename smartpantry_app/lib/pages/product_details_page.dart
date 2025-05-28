@@ -45,13 +45,23 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       return;
     }
 
+    final data = {
+      'barcode': widget.barcode,
+      'name': widget.name,
+      'brand': widget.brand,
+      'energy': widget.energy,
+      'bestBefore': _bestBefore!.toIso8601String(),
+      'createdAt': FieldValue.serverTimestamp(),
+    };
+    print("Adding product to Firestore: $data");
+
     await FirebaseFirestore.instance.collection('products').add({
       'barcode': widget.barcode,
       'name': widget.name,
       'brand': widget.brand,
       'energy': widget.energy,
       'bestBefore': _bestBefore!.toIso8601String(),
-      'createdAt': Timestamp.now(),
+      'createdAt': FieldValue.serverTimestamp(),
     });
     if (!mounted) return;
     Navigator.pop(context, true); // Retrurn true to indicate success
