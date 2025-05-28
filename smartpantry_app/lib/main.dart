@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "SmartPantry",
-theme: ThemeData(
+      theme: ThemeData(
         useMaterial3: true,
         colorScheme: const ColorScheme(
           brightness: Brightness.light,
@@ -47,7 +47,8 @@ theme: ThemeData(
           style: OutlinedButton.styleFrom(foregroundColor: Color(0xFF2E7D32)),
         ),
       ),
-      home: const MyHomePage(title: 'SmartPantry Home'),
+      home: const MyHomePage(title: 'SmartPantry - Älykäs Keittiö'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

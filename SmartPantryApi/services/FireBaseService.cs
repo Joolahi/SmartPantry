@@ -1,12 +1,7 @@
 using Google.Cloud.Firestore;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System;
-using Microsoft.VisualBasic;
-using Google.Cloud.Firestore.V1;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class FirebaseService
 {
@@ -16,38 +11,37 @@ public class FirebaseService
     {
         var projectId = Environment.GetEnvironmentVariable("FIREBASE_PROJECT_ID");
         var credentialsPath = "/etc/secrets/firebase-key.json";
-
         Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", credentialsPath);
 
         _firestoreDb = FirestoreDb.Create(projectId);
     }
 
-    public async Task<List<Dictionary<string, object>>> GetAllProductsAsync()
+    public async Task<List<ProductDto>> GetAllProductsAsync()
     {
         var productsRef = _firestoreDb.Collection("products");
         var snapshot = await productsRef.GetSnapshotAsync();
 
-        var products = new List<Dictionary<string, object>>();
+        var result = new List<ProductDto>();
+
         foreach (var doc in snapshot.Documents)
         {
-            var raw = doc.ToDictionary();
-            var cleaned = new Dictionary<string, object>();
-            foreach (var entry in raw)
+            var data = doc.ToDictionary();
+
+            if (data.Count == 0) continue;
+
+            result.Add(new ProductDto
             {
-                if (entry.Key == "createdAt" && entry.Value is Timestamp ts)
-                {
-                    cleaned[entry.Key] = ts.ToDateTime().ToString("o");
-                }
-                else
-                {
-                    cleaned[entry.Key] = entry.Value;
-                }
-            }
-            if (cleaned.Count > 0)
-            {
-                products.Add(cleaned);
-            }
+                Name = data.GetValueOrDefault("name")?.ToString() ?? "",
+                Barcode = data.GetValueOrDefault("barcode")?.ToString() ?? "",
+                Brand = data.GetValueOrDefault("brand")?.ToString() ?? "",
+                Energy = Convert.ToDouble(data.GetValueOrDefault("energy") ?? 0),
+                BestBefore = data.GetValueOrDefault("bestBefore")?.ToString() ?? "",
+                CreatedAt = data.GetValueOrDefault("createdAt") is Timestamp ts
+                    ? ts.ToDateTime().ToString("o")
+                    : ""
+            });
         }
-        return products;
+
+        return result;
     }
 }

@@ -8,9 +8,11 @@ using System.Text.Json;
 public class ProductsController : ControllerBase
 {
     private readonly HttpClient _httpClient;
+    private readonly FirebaseService _firebaseService;
     public ProductsController(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient();
+        _firebaseService = new FirebaseService();
     }
 
     [HttpGet("barcode/{code}")]
@@ -44,8 +46,7 @@ public class ProductsController : ControllerBase
     [HttpGet("firebase-products")]
     public async Task<IActionResult> GetFirebaseProducts()
     {
-        var services = new FirebaseService();
-        var products = await services.GetAllProductsAsync();
+        var products = await _firebaseService.GetAllProductsAsync();
         return Ok(products);
     }
 }
