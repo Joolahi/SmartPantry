@@ -16,9 +16,36 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "SmartPantry",
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+theme: ThemeData(
         useMaterial3: true,
+        colorScheme: const ColorScheme(
+          brightness: Brightness.light,
+          primary: Color(0xFF2E7D32), // Syvä vihreä
+          onPrimary: Colors.white,
+          secondary: Color(0xFFEF6C00), // Tumma oranssi
+          onSecondary: Colors.white,
+          surface: Color(0xFFF5F0E6), // Pehmeä beige
+          onSurface: Color(0xFF3E3E3E), // Teksti
+          error: Colors.red,
+          onError: Colors.white,
+        ),
+        scaffoldBackgroundColor: const Color(0xFFE8F5E9),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF2E7D32),
+          foregroundColor: Colors.white,
+        ),
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(color: Color(0xFF3E3E3E)),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFFEF6C00),
+            foregroundColor: Colors.white,
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(foregroundColor: Color(0xFF2E7D32)),
+        ),
       ),
       home: const MyHomePage(title: 'SmartPantry Home'),
     );

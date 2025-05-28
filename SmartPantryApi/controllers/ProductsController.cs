@@ -40,4 +40,12 @@ public class ProductsController : ControllerBase
         return Ok(result);
 
     }
+
+    [HttpGet("firebase-products")]
+    public async Task<IActionResult> GetFirebaseProducts()
+    {
+        var services = new FirebaseService();
+        var products = await services.GetAllProductsAsync();
+        return Ok(products);
+    }
 }

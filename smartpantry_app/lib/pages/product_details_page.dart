@@ -54,7 +54,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       'createdAt': Timestamp.now(),
     });
     if (!mounted) return;
-    Navigator.pop(context, true); // Palauttaa true jos lisätty
+    Navigator.pop(context, true); // Retrurn true to indicate success
   }
 
   @override

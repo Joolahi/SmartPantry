@@ -27,7 +27,7 @@ class ScanPageState extends State<ScanPage> {
 
     try {
       final response = await http.get(Uri.parse(url));
-      if (!mounted) return; // Tarkista onko widget vielä aktiivinen
+      if (!mounted) return; // Check if the widget is still mounte
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
 
