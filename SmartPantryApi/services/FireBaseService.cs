@@ -13,7 +13,7 @@ public class FirebaseService
     public FirebaseService()
     {
         var projectId = Environment.GetEnvironmentVariable("FIREBASE_PROJECT_ID");
-        var credentialsPath = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
+        var credentialsPath = "/etc/secrets/firebase-key.json";
 
         Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", credentialsPath);
 
