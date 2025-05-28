@@ -64,6 +64,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       'energy': widget.energy,
       'bestBefore': _bestBefore!.toIso8601String(),
       'createdAt': FieldValue.serverTimestamp(),
+      'imageThumbUrl': widget.imageThumbUrl ?? '',
     });
     if (!mounted) return;
     Navigator.pop(context, true); // Retrurn true to indicate success

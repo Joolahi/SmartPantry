@@ -41,7 +41,7 @@ class ScanPageState extends State<ScanPage> {
               energy: data['energy'] != null
                   ? double.parse(data['energy'].toString())
                   : 0.0,
-              imageThumbUrl: data['image'] ?? '',
+              imageThumbUrl: data['imageUrl'] ?? '',
             ),
           ),
         );
