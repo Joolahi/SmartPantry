@@ -38,7 +38,8 @@ public class FirebaseService
                 BestBefore = data.GetValueOrDefault("bestBefore")?.ToString() ?? "",
                 CreatedAt = data.GetValueOrDefault("createdAt") is Timestamp ts
                     ? ts.ToDateTime().ToString("o")
-                    : ""
+                    : "",
+                Image = data.GetValueOrDefault("imageThumbUrl")?.ToString() ?? ""
             });
         }
 

@@ -42,6 +42,17 @@ class _ProductListPageState extends State<ProductListPage> {
                     ListTile(
                       title: Text(p.name),
                       subtitle: Text("${p.brand} • ${p.energy} kcal"),
+                      trailing: p.imageThumbUrl != null
+                          ? Image.network(
+                              p.imageThumbUrl!,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.broken_image, size: 50);
+                              },
+                            )
+                          : const Icon(Icons.image),
                     ),
                     const Divider(
                       thickness: 0.8,
