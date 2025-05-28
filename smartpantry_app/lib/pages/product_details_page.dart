@@ -6,6 +6,7 @@ class ProductDetailsPage extends StatefulWidget {
   final String name;
   final String brand;
   final double energy;
+  final String? imageThumbUrl;
 
   const ProductDetailsPage({
     super.key,
@@ -13,6 +14,7 @@ class ProductDetailsPage extends StatefulWidget {
     required this.name,
     required this.brand,
     required this.energy,
+    this.imageThumbUrl,
   });
 
   @override

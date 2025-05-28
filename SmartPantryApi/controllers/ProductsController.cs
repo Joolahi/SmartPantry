@@ -36,7 +36,8 @@ public class ProductsController : ControllerBase
             Brand = product.GetProperty("brands").GetString(),
             Energy = product.GetProperty("nutriments").GetProperty("energy-kcal").GetDouble(),
             Fat = product.GetProperty("nutriments").TryGetProperty("fat", out var fat) ? fat.GetDouble() : 0,
-            Sugars = product.GetProperty("nutriments").TryGetProperty("sugars", out var sugars) ? sugars.GetDouble() : 0
+            Sugars = product.GetProperty("nutriments").TryGetProperty("sugars", out var sugars) ? sugars.GetDouble() : 0,
+            imageUrl = product.GetProperty("image_url").TryGetProperty("image_url", out var imageUrl) ? imageUrl.GetString() : null,
         };
 
         return Ok(result);

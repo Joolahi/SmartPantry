@@ -4,6 +4,7 @@ class Product {
   final double energy;
   final String createdAt;
   final String bestBefore;
+  final String? imageThumbUrl;
 
   Product({
     required this.name,
@@ -11,6 +12,7 @@ class Product {
     required this.energy,
     required this.createdAt,
     required this.bestBefore,
+    this.imageThumbUrl,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class Product {
       energy: (json['energy'] ?? 0).toDouble(),
       createdAt: json['createdAt'] ?? "",
       bestBefore: json['bestBefore'] ?? "",
+      imageThumbUrl: json['imageThumbUrl'] ?? "",
     );
   }
 }

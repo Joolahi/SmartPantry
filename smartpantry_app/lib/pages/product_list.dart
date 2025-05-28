@@ -22,7 +22,6 @@ class _ProductListPageState extends State<ProductListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Products")),
       body: FutureBuilder<List<Product>>(
         future: _futureProducts,
         builder: (context, snapshot) {
@@ -38,9 +37,19 @@ class _ProductListPageState extends State<ProductListPage> {
               itemCount: products.length,
               itemBuilder: (context, index) {
                 final p = products[index];
-                return ListTile(
-                  title: Text(p.name),
-                  subtitle: Text("${p.brand} • ${p.energy} kcal"),
+                return Column(
+                  children: [
+                    ListTile(
+                      title: Text(p.name),
+                      subtitle: Text("${p.brand} • ${p.energy} kcal"),
+                    ),
+                    const Divider(
+                      thickness: 0.8,
+                      indent: 16,
+                      endIndent: 16,
+                      color: Color(0xFF2E7D32),
+                    ),
+                  ],
                 );
               },
             );
