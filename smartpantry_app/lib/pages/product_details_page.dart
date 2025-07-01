@@ -55,7 +55,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       'bestBefore': _bestBefore!.toIso8601String(),
       'createdAt': FieldValue.serverTimestamp(),
     };
-    print("Adding product to Firestore: $data");
 
     await FirebaseFirestore.instance.collection('products').add({
       'barcode': widget.barcode,
