@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartpantry_app/services/auth_service.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final String barcode;
@@ -40,6 +41,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   }
 
   void _addProductAndReturn() async {
+    final uid = AuthService.currentUser?.uid;
+    if (uid == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Käyttäjä ei ole kirjautunut sisään")),
+      );
+      return;
+    }
+
     if (_bestBefore == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Valitse parasta ennen -päiväys")),
@@ -47,24 +56,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       return;
     }
 
-    final data = {
-      'barcode': widget.barcode,
-      'name': widget.name,
-      'brand': widget.brand,
-      'energy': widget.energy,
-      'bestBefore': _bestBefore!.toIso8601String(),
-      'createdAt': FieldValue.serverTimestamp(),
-    };
-
-    await FirebaseFirestore.instance.collection('products').add({
-      'barcode': widget.barcode,
-      'name': widget.name,
-      'brand': widget.brand,
-      'energy': widget.energy,
-      'bestBefore': _bestBefore!.toIso8601String(),
-      'createdAt': FieldValue.serverTimestamp(),
-      'imageThumbUrl': widget.imageThumbUrl ?? '',
-    });
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('products')
+        .add({
+          'barcode': widget.barcode,
+          'name': widget.name,
+          'brand': widget.brand,
+          'energy': widget.energy,
+          'bestBefore': _bestBefore!.toIso8601String(),
+          'createdAt': FieldValue.serverTimestamp(),
+          'imageThumbUrl': widget.imageThumbUrl ?? '',
+        });
     if (!mounted) return;
     Navigator.pop(context, true); // Retrurn true to indicate success
   }

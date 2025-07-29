@@ -3,10 +3,12 @@ import 'pages/scan_page.dart';
 import 'pages/product_list.dart';
 import 'pages/settings_page.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await AuthService.singInAnonymouslyIfNeeded();
   runApp(const MyApp());
 }
 

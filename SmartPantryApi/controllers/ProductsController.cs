@@ -44,10 +44,14 @@ public class ProductsController : ControllerBase
 
     }
 
-    [HttpGet("firebase-products")]
-    public async Task<IActionResult> GetFirebaseProducts()
+    [HttpGet("/{userId}/firebase-products")]
+    public async Task<IActionResult> GetFirebaseProducts( string userId)
     {
-        var products = await _firebaseService.GetAllProductsAsync();
+        if (string.IsNullOrEmpty(userId))
+        {
+            return BadRequest("User ID cannot be null or empty.");
+        }
+        var products = await _firebaseService.GetAllProductsAsync(userId);
         return Ok(products);
     }
 }

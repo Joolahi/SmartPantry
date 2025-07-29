@@ -16,9 +16,9 @@ public class FirebaseService
         _firestoreDb = FirestoreDb.Create(projectId);
     }
 
-    public async Task<List<ProductDto>> GetAllProductsAsync()
+    public async Task<List<ProductDto>> GetAllProductsAsync( string userId)
     {
-        var productsRef = _firestoreDb.Collection("products");
+        var productsRef = _firestoreDb.Collection("users").Document(userId).Collection("products");
         var snapshot = await productsRef.GetSnapshotAsync();
 
         var result = new List<ProductDto>();
