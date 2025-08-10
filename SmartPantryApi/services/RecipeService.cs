@@ -95,20 +95,30 @@ public class RecipeService
             model = "gpt-4o-mini",
             messages = new[]
             {
-                new {
-                    role = "user",
-                    content = $"Translate this text from Finnish to English: \"{text}\""
-                }
-            },
+            new {
+                role = "user",
+                content = $"Translate this text from Finnish to English: \"{text}\""
+            }
+        },
             temperature = 0.3,
             max_tokens = 150
         };
+
         var jsonBody = JsonSerializer.Serialize(requestBody);
         var request = new HttpRequestMessage(HttpMethod.Post, url);
         request.Headers.Add("Authorization", $"Bearer {_openAiKey}");
-        request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+        request.Content = new StringContent(jsonBody, System.Text.Encoding.UTF8, "application/json");
 
         var response = await _httpClient.SendAsync(request);
+
+        if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+        {
+            // Voit lisätä logituksen tai palauttaa viestin fronttiin
+            // Esim. voit palata tyhjään tai alkuperäiseen tekstiin, tai heittää oman virheen
+            // tässä esimerkissä palautetaan alkuperäinen teksti:
+            return text;
+        }
+
         response.EnsureSuccessStatusCode();
 
         var responseJson = await response.Content.ReadAsStringAsync();
