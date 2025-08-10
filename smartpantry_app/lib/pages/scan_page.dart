@@ -3,6 +3,7 @@ import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'product_details_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
@@ -17,9 +18,8 @@ class ScanPageState extends State<ScanPage> {
     var result = await BarcodeScanner.scan();
     var code = result.rawContent;
     if (code.isEmpty) return;
-
-    var url =
-        'https://smartpantry-backend.onrender.com/api/Products/barcode/$code';
+    final String baseUrl = dotenv.env['BASE_URL'] ?? '';
+    var url = '$baseUrl/api/Products/barcode/$code';
 
     setState(() {
       isLoading = true;

@@ -9,10 +9,12 @@ public class ProductsController : ControllerBase
 {
     private readonly HttpClient _httpClient;
     private readonly FirebaseService _firebaseService;
+    private readonly RecipeService _recipeService;
     public ProductsController(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient();
         _firebaseService = new FirebaseService();
+        _recipeService = new RecipeService(_httpClient);
     }
 
     [HttpGet("barcode/{code}")]
@@ -44,8 +46,8 @@ public class ProductsController : ControllerBase
 
     }
 
-    [HttpGet("/{userId}/firebase-products")]
-    public async Task<IActionResult> GetFirebaseProducts( string userId)
+    [HttpGet("{userId}/firebase-products")]
+    public async Task<IActionResult> GetFirebaseProducts(string userId)
     {
         if (string.IsNullOrEmpty(userId))
         {
@@ -53,5 +55,16 @@ public class ProductsController : ControllerBase
         }
         var products = await _firebaseService.GetAllProductsAsync(userId);
         return Ok(products);
+    }
+    [HttpGet("{userId}/recipes")]
+    public async Task<IActionResult> GetRecipesForUser(string userId)
+    {
+        if (string.IsNullOrEmpty(userId))
+        {
+            return BadRequest("User ID cannot be null or empty.");
+        }
+
+        var recipes = await _recipeService.GetRecipesForUserAsync(userId);
+        return Ok(recipes);
     }
 }
