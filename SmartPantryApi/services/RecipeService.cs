@@ -40,12 +40,12 @@ public class RecipeService
             return new List<RecipeDto>();
         }
 
-        // Valmistellaan ainesosat suomeksi, käännetään englanniksi
+
         var ingredientsFi = products.Select(p => p.Name.Trim().ToLower()).OrderBy(x => x).ToList();
         var ingredientsEn = await TranslateToEnglishAsync(string.Join(", ", ingredientsFi));
         var cacheKey = string.Join(",", ingredientsEn.Split(",").Select(s => s.Trim().ToLower()).OrderBy(x => x));
 
-        // Tarkistetaan välimuisti Firebasesta (24h voimassa)
+
         var cacheDoc = await _firestoreDb.Collection("recipes_cache").Document(cacheKey).GetSnapshotAsync();
         if (cacheDoc.Exists && cacheDoc.ContainsField("recipes") && cacheDoc.ContainsField("cachedAt"))
         {
@@ -56,10 +56,10 @@ public class RecipeService
             }
         }
 
-        // Haetaan reseptit OpenAI:lta
+
         var recipes = await FetchRecipesFromOpenAIAsync(ingredientsEn);
 
-        // Tallennetaan välimuistiin Firebasessa
+
         var cacheData = new Dictionary<string, object>
         {
             { "recipes", recipes },
@@ -95,10 +95,10 @@ public class RecipeService
         request.Headers.Add("Authorization", $"Bearer {_openAiKey}");
         request.Content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
-        var response = await _httpClient.SendAsync(request);
+        var response = await SendWithRetryAsync(request);
         if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {
-            // Rate limit - voit halutessasi käsitellä toisin
+
             return new List<RecipeDto>();
         }
         response.EnsureSuccessStatusCode();
@@ -112,7 +112,6 @@ public class RecipeService
             .GetProperty("content")
             .GetString();
 
-        // Yritetään parsia OpenAI:n vastaus JSON-listaksi
         try
         {
             var recipes = JsonSerializer.Deserialize<List<RecipeDto>>(content, new JsonSerializerOptions
@@ -124,10 +123,9 @@ public class RecipeService
         }
         catch
         {
-            // Jos JSON-parsaus epäonnistuu, voit halutessasi logittaa tai käsitellä virheen
+          
         }
 
-        // Palautetaan tyhjä lista jos parsinta epäonnistuu
         return new List<RecipeDto>();
     }
 
@@ -136,13 +134,13 @@ public class RecipeService
         var url = "https://api.openai.com/v1/chat/completions";
         var requestBody = new
         {
-            model = "gpt-4o-mini",
+            model = "gpt-3.5-turbo",
             messages = new[]
             {
                 new { role = "user", content = $"Translate this text from Finnish to English: \"{text}\"" }
             },
-            temperature = 0.3,
-            max_tokens = 150
+            temperature = 0.6,
+            max_tokens = 600
         };
 
         var jsonBody = JsonSerializer.Serialize(requestBody);
@@ -153,7 +151,7 @@ public class RecipeService
         var response = await _httpClient.SendAsync(request);
         if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
         {
-            return text; // fallback: palauta suomi jos liian monta pyyntöä
+            return text; 
         }
         response.EnsureSuccessStatusCode();
 
@@ -167,5 +165,21 @@ public class RecipeService
             .GetString();
 
         return translation.Trim();
+    }
+    private async Task<HttpResponseMessage> SendWithRetryAsync(HttpRequestMessage request, int maxRetries = 3, int delayMs = 1000)
+    {
+        for (int attempt = 0; attempt < maxRetries; attempt++)
+        {
+            var response = await _httpClient.SendAsync(request);
+            if (response.StatusCode != System.Net.HttpStatusCode.TooManyRequests)
+                return response;
+
+            if (attempt == maxRetries - 1)
+                return response;
+
+            await Task.Delay(delayMs);
+            delayMs *= 2;
+        }
+        return new HttpResponseMessage(System.Net.HttpStatusCode.TooManyRequests);
     }
 }
