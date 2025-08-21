@@ -1,21 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'pages/scan_page.dart';
 import 'pages/product_list.dart';
 import 'pages/settings_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'services/auth_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'pages/login_page.dart';
+import 'pages/register_page.dart';
+import 'pages/user_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
   await Firebase.initializeApp();
   await AuthService.singInAnonymouslyIfNeeded();
-  runApp(const MyApp());
+
+  final prefs = await SharedPreferences.getInstance();
+  final savedToken = prefs.getString('token');
+  final savedUserName = prefs.getString('userName');
+
+  runApp(
+    MyApp(isLoggedIn: savedToken != null, savedUserName: savedUserName),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+  final String? savedUserName;
+
+  const MyApp({super.key, required this.isLoggedIn, this.savedUserName});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,15 +65,26 @@ class MyApp extends StatelessWidget {
           style: OutlinedButton.styleFrom(foregroundColor: Color(0xFF2E7D32)),
         ),
       ),
-      home: const MyHomePage(title: 'SmartPantry - Älykäs Keittiö'),
+      home: isLoggedIn
+          ? MyHomePage(
+              title: "SmartPantry",
+              userName: savedUserName ?? 'Käyttäjä',
+            )
+          : const LoginPage(),
       debugShowCheckedModeBanner: false,
+       //initialRoute: '/login',
+      routes: {
+        "/login": (context) => const LoginPage(),
+        "/register": (context) => const RegisterPage(),
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.userName});
   final String title;
+  final String userName;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -68,7 +93,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [ScanPage(), ProductListPage(), SettingsPage()];
+  final List<Widget> _pages = [
+    ScanPage(),
+    ProductListPage(),
+    SettingsPage(),
+    UserPage(),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -79,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(title: Text(widget.userName)),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -92,9 +122,12 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.settings),
             label: 'Asetukset',
           ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Käyttäjä'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: Color(0xFF2E7D23),
+        unselectedItemColor: Colors.grey[600],
       ),
     );
   }

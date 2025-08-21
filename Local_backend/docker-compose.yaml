@@ -1,6 +1,5 @@
 version: '3.8'
 
-# for postgres
 services:
   db:
     image: postgres:13
@@ -15,21 +14,19 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  # for backend of the application
   backend:
     build:
       context: ./backend
-      container_name: backend
-      restart: always
-      ports:
-        - "8000:8000"
-      depends_on:
-        - db
+    container_name: backend
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
     environment:
-      DATABASE_URL: postgres://myuser:mypassword@db:5432/mydatabase
+      DATABASE_URL: postgresql://myuser:mypassword@db:5432/mydatabase
     volumes:
       - ./backend:/app
-
 
 volumes:
   db_data:

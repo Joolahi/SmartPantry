@@ -8,6 +8,7 @@ plugins {
 dependencies {
   implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
   implementation("com.google.firebase:firebase-auth")
+  coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 android {
     namespace = "com.example.smartpantry_app"
@@ -17,6 +18,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+        isCoreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
