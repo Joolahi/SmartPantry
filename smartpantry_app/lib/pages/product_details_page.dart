@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:smartpantry_app/services/auth_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ProductDetailsPage extends StatefulWidget {
   final String barcode;
@@ -56,6 +58,20 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
       return;
     }
 
+    final response = await http.post(
+      Uri.parse('http://192.168.100.11:8000/barcode'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'userId': uid,
+        'barcode': widget.barcode,
+        'name': widget.name,
+        'brand': widget.brand,
+        'energy': widget.energy,
+        'bestBefore': _bestBefore!.toIso8601String(),
+        'image': widget.imageThumbUrl ?? '',
+      }),
+    );
+    /*
     await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -69,8 +85,16 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           'createdAt': FieldValue.serverTimestamp(),
           'imageThumbUrl': widget.imageThumbUrl ?? '',
         });
-    if (!mounted) return;
-    Navigator.pop(context, true); // Retrurn true to indicate success
+  */
+    if (response.statusCode == 200) {
+      Navigator.pop(context, true); // Retrurn true to indicate success
+      return;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Tuotteen lisääminen epäonnistui!')),
+      );
+      return;
+    }
   }
 
   @override

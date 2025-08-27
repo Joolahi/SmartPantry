@@ -18,8 +18,8 @@ class ScanPageState extends State<ScanPage> {
     var result = await BarcodeScanner.scan();
     var code = result.rawContent;
     if (code.isEmpty) return;
-    final String baseUrl = dotenv.env['BASE_URL'] ?? '';
-    var url = '$baseUrl/api/Products/barcode/$code';
+    final String baseUrl = dotenv.env['BASE_URL1'] ?? '';
+    var url = '$baseUrl/barcode/$code';
 
     setState(() {
       isLoading = true;

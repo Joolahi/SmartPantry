@@ -22,6 +22,8 @@ def login_user(req):
             "exp" : datetime.today() + timedelta(days=30)
         }
 
+        username = user.email.split('@')[0]
+
         token = jwt.encode(token_data, SECRET_KEY, algorithm="HS256")
     
-        return {"message": "Login successful", "user_id": user.id, "token": token, "name": user.email}
+        return {"message": "Login successful", "user_id": user.id, "token": token, "name": username}
